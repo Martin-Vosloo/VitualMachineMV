@@ -347,17 +347,26 @@ class VM:
                 print(self.pop())
 
             case OP.JUMP : 
-                self.cpu.ip = self.cpu.mem[self.cpu.ip]
+		int : jumpAddr = self.cpu.mem[self.cpu.ip]
+		if jumpAddr < 0 : 
+			raise Exception("Undefined jump address")
+                self.cpu.ip = jumpAddr
                 self.fetch()
 
             case OP.JTRUE:
+		int : jumpAddr = self.cpu.mem[self.cpu.ip] - 1 
+		if jumpAddr < 0 : 
+			raise Exception("Undefined jump address")
                 if self.pop() == 1:
-                    self.cpu.ip = self.cpu.mem[self.cpu.ip] - 1
+                    self.cpu.ip = jumpAddr
                 self.fetch()
 
             case OP.JFALSE:
+		int : jumpAddr = self.cpu.mem[self.cpu.ip] - 1 
+		if jumpAddr < 0 : 
+			raise Exception("Undefined jump address")
                 if self.pop() == 0:
-                    self.cpu.ip = self.cpu.mem[self.cpu.ip] - 1
+                    self.cpu.ip = jumpAddr
                 self.fetch()
 
             case OP.PRNT:
